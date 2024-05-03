@@ -1,10 +1,12 @@
 const express = require('express')
 const nodemailer = require('nodemailer')
-
+const cors =require('cors')
 const app = express()
 
 app.use(express.json())
-
+app.use(cors({
+    origin:"*"
+}))
 
 app.post('/sendMail',(req,res)=>{
     const transporter = nodemailer.createTransport({
@@ -17,12 +19,17 @@ app.post('/sendMail',(req,res)=>{
     const data = req.body
 
     console.log(data)
+
+    const html = `<div><h2>From ${data.name}</h2>
+     <h4>Client email id : ${data.email}</h4>
+     <p> client comments that  ${data.message}</p>
+    </div>`
     
     const mailOptions = {
         from: 'vinothpukal6580@gmail.com',
         to: 'kumar.nov07@gmail.com',
-        subject: "subject",
-        text:'hi'
+        subject: data.subject,
+        html:html
     }
     transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
